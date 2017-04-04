@@ -14,3 +14,24 @@ To read the data from the Arduino on a Raspberry Pi or CHIP or whatever, see ard
 
 To use this with the weeWX weather station program, see the driver aws.py.
 
+
+Installation
+
+- load ArduinoWeather.ino onto your Arduino
+
+- install the weeWX driver file. I'm putting it in /home/weewx/bin/weewx/drivers/aws.py, but I don't think that's the correct location
+
+- add this section to your weeWX config file:
+
+[AWS]
+
+    # This section is for an Arduion Weather Station.
+
+    # Serial port such as /dev/ttyACM0, /dev/ttyS0, /dev/ttyUSB0, or /dev/cuaU0
+    port = /dev/ttyACM0
+
+    # The driver to use:
+    driver = weewx.drivers.aws
+
+- in the [Station] section of your weeWX config file, set "station_type" to "AWS".
+
