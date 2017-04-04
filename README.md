@@ -23,7 +23,6 @@ Installation
 
 - add this section to your weeWX config file:
 
-[code]
 [AWS]
 
     # This section is for an Arduion Weather Station.
@@ -33,7 +32,6 @@ Installation
 
     # The driver to use:
     driver = weewx.drivers.aws
-[/code]
 
 - in the [Station] section of your weeWX config file, set "station_type" to "AWS".
 
