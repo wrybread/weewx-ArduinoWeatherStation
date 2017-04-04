@@ -15,7 +15,7 @@ To read the data from the Arduino on a Raspberry Pi or CHIP or whatever, see ard
 To use this with the weeWX weather station program, see the driver aws.py.
 
 
-Installation
+# Installation
 
 - load ArduinoWeather.ino onto your Arduino
 
