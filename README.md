@@ -12,7 +12,7 @@ Or use their instructions directly:
 
 http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer
 
-A nice way to wire up the anemometer is to use a phone cable extension chord or coupler so you don't need to splice the line coming from the anemometer. Works nicely but don't forget to flip the wire layout in the diagram above. I unfortunately learned that one the hard way.
+A nice way to wire up the anemometer is to use a phone cable extension chord or coupler so you don't need to splice the line coming from the anemometer. Works great but don't forget to flip the wire layout in the diagram above. I unfortunately learned that one the hard way.
 
 For the Arduino sketch, see ArduinoWeather.ino here, which I adapted from the code [here](http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer):
 
