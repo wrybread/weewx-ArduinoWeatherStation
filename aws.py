@@ -73,6 +73,9 @@ def loginf(msg):
 def logerr(msg):
     logmsg(syslog.LOG_ERR, msg)
 
+
+
+
 class AWSDriver(weewx.drivers.AbstractDevice):
     """weewx driver that communicates with an Arduino weather station
     
@@ -101,159 +104,40 @@ class AWSDriver(weewx.drivers.AbstractDevice):
         DEBUG_READ = int(stn_dict.get('debug_read', DEBUG_READ))
 
         self.last_read_time = time.time()
-
-    @property
-    def hardware_name(self):
-        return "AWS"
-
-    def genLoopPackets(self):
-
-        ntries = 0
-
-        
-        while ntries < self.max_tries:
-            
-            ntries += 1
-            
-            try:
-
-                packet = {'dateTime': int(time.time() + 0.5),
-                          'usUnits': weewx.US}
-                # open a new connection to the station for each reading
-                with Station(self.port) as station:
-                    readings = station.get_readings()
-                    
-                data = Station.parse_readings(readings)
-
-                packet.update(data)
-
-                self._augment_packet(packet)
-
-                ntries = 0
+        self.read_counter = 0
 
 
-                # %%
-                time_since_last_read = time.time() - self.last_read_time
-                print "%s seconds since last read" % time_since_last_read
-                self.last_read_time = time.time()
-                
-                yield packet
-
-                if self.polling_interval:
-                    time.sleep(self.polling_interval)
-
-                    
-            except (serial.serialutil.SerialException, weewx.WeeWxIOError), e:
-                logerr("Failed attempt %d of %d to get LOOP data: %s" %
-                       (ntries, self.max_tries, e))
-
-                time.sleep(self.retry_wait)
-        else:
-            msg = "Max retries (%d) exceeded for LOOP data" % self.max_tries
-            logerr(msg)
-            raise weewx.RetriesExceeded(msg)
-
-    def _augment_packet(self, packet):
-        # calculate the rain delta from rain total
-        #if self.last_rain is not None:
-        #    packet['rain'] = packet['long_term_rain'] - self.last_rain
-        #else:
-        #    packet['rain'] = None
-        #self.last_rain = packet['long_term_rain']
-
-        # no wind direction when wind speed is zero
-        if 'windSpeed' in packet and not packet['windSpeed']:
-            packet['windDir'] = None
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Station(object):
-
-    
-    def __init__(self, port):
-        self.port = port
-        self.baudrate = 9600
-        self.timeout = 60
-        self.serial_port = None
-
-        #self.serial_port = self.open()
-
-
-
-
-        
-
-    def __enter__(self):
-
-        self.open()
-        return self
-
-    def __exit__(self, _, value, traceback):
-        self.close()
-
-    def open(self):
-        
         logdbg("open serial port %s" % self.port)
 
-        try:
-            self.serial_port = serial.Serial(self.port, self.baudrate, timeout=self.timeout)
-            logdbg("successfully opened the Arduino on port %s" % self.port)
-        except Exception, e:
-            logerr("Failed to open the Arduino: %s" % e)
-            self.serial_port = None
-
-        #self.serial_port = serial.Serial(self.port, self.baudrate, timeout=self.timeout)
-
-    def close(self):
-
-        if self.serial_port is not None:
-            logdbg("close Arduino on port %s" % self.port)
-
-            try: self.serial_port.close()
-            except: pass
-            
-            self.serial_port = None
+        self.baudrate = 9600
+        self.timeout = 10 # changed from 60
+        self.serial_port = None
+        
+        self.serial_port = serial.Serial(self.port, self.baudrate,
+                                         timeout=self.timeout)
 
 
 
-    def read(self):
+
+    def read_buffer(self):
 
         # read the buffer
-        data = ""
+        new_data = ""
 
         try:
             while True:
-                data = self.serial_port.readline()
-                data = data.replace("\n", "")
-                break
+                new_data = self.serial_port.readline()
+                new_data = new_data.replace("\n", "")
+                return new_data
 
-        except: pass
-        
-        return data
+        except Exception, e:
+            print "error reading serial port: " + str(e) #%%
+            
+            pass
 
 
-    def get_readings(self):
-        
-        b = self.read()
-        if DEBUG_READ:
-            logdbg(b)
-        return b
 
-    @staticmethod
-    def parse_readings(b):
+    def parse_readings(self, b):
         """
 	  AWS station emits csv data in the format:
 
@@ -267,22 +151,24 @@ class Station(object):
           [3]temperature
           [4]barometer
         """
-
+        
         parts = b.split(",")
         
         #print "parsing: ", b, "parts =", parts
         
         data = dict()
         
-        try: data['windSpeed'] = float(parts[0])  # mph
+        try:
+            data['windSpeed'] = float(parts[0])  # mph
+            data['windDir'] = float(parts[1])
+
+            # these might have to be renamed
+            #data['temperature'] = float(parts[2])
+            #data['barometer'] = float(parts[3])
+            
         except Exception, e:
-            logerr("Error getting windSpeed: %s" % e)
-            data['windSpeed'] = 0 # prob not a good idea to report 0 mph when the device isn't attached...
+            logerr("Error converting data: %s" % e)
         
-	try: data['windDir'] = float(parts[1])
-	except Exception, e:
-            logerr("Error getting windDir: %s" % e)
-            data['windDir'] = 0 # prob not a good idea to report 0 mph when the device isn't attached...
 
 	#data['windDirCompass'] = parts[2]  # wind speed compass. Unused, or probably wrong variable name.
 
@@ -293,6 +179,74 @@ class Station(object):
         if DEBUG_READ:
             logdbg(data)
         return data
+
+
+        
+
+
+    @property
+    def hardware_name(self):
+        return "AWS"
+
+
+    def genLoopPackets(self):
+
+        ntries = 0
+        
+        while ntries < self.max_tries:
+            
+            ntries += 1
+            
+            try:
+                
+                packet = {'dateTime': int(time.time() + 0.5),
+                          'usUnits': weewx.US}
+                
+                serial_data = self.read_buffer()
+                    
+                data = self.parse_readings(serial_data)
+                
+                packet.update(data)
+                
+                self._augment_packet(packet)
+                
+                ntries = 0
+
+
+                #%%
+                self.read_counter += 1
+                time_since_last_read = time.time() - self.last_read_time
+                print "%s seconds since last read" % time_since_last_read, self.read_counter
+                self.last_read_time = time.time()
+                
+                yield packet
+
+                if self.polling_interval:
+                    time.sleep(self.polling_interval)
+                    
+            except (serial.serialutil.SerialException, weewx.WeeWxIOError), e:
+                logerr("Failed attempt %d of %d to get LOOP data: %s" %
+                       (ntries, self.max_tries, e))
+                time.sleep(self.retry_wait)
+        else:
+            msg = "Max retries (%d) exceeded for LOOP data" % self.max_tries
+            logerr(msg)
+            raise weewx.RetriesExceeded(msg)
+
+
+
+    def _augment_packet(self, packet):
+        # calculate the rain delta from rain total
+        #if self.last_rain is not None:
+        #    packet['rain'] = packet['long_term_rain'] - self.last_rain
+        #else:
+        #    packet['rain'] = None
+        #self.last_rain = packet['long_term_rain']
+
+        # no wind direction when wind speed is zero
+        if 'windSpeed' in packet and not packet['windSpeed']:
+            packet['windDir'] = None
+
 
 
 
@@ -351,6 +305,5 @@ if __name__ == '__main__':
 
     with Station(options.port) as s:
         while True:
-
             print time.time(), s.get_readings() 
 
