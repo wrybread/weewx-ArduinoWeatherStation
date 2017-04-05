@@ -1,8 +1,8 @@
 # Arduino Weather Station
 
-This is some code to enable connecting a Davis anemometer directly to an Arduino, without the Davis base station (aka the "ISS"). The anemometer I used is sold as a replacement part for the Davis Vantage Pro2. They're on eBay in the $110 range. The one I purchased had the auction name "Davis Instruments 6410 Davis Anemometer For Vantage Pro Pro2 6152". Works great!
+This is some code to enable connecting a Davis anemometer directly to an Arduino, without the Davis base station (aka the "ISS"). It also allows the Arduino to communicate with the weeWX program running on a Pi or whatever like it was a regular weather station. That means you get a pro quality internet connected weather station for about $130!
 
-With this method you get a pro quality internet connected wind gauge for about $130. That's assuming $10 for the Arduino and $10 for the CHIP computer that's running weeWX. Not bad!
+The anemometer I used is sold as a replacement part for the Davis Vantage Pro2. They're on eBay in the $110 range. The one I purchased had the auction name "Davis Instruments 6410 Davis Anemometer For Vantage Pro Pro2 6152". 
 
 Here's a webpage that's receiving data from it every few seconds:
 
@@ -19,7 +19,7 @@ Or use their instructions directly, since there's a bit more detail on their sit
 
 http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer
 
-A nice way to wire up the anemometer is to use a phone cable extension chord or coupler so you don't need to splice the line coming from the anemometer. Works great but don't forget to flip the wire layout in the diagram above. I unfortunately had to learn that the hard way.
+A nice way to wire up the anemometer is to use a phone cable extension chord or coupler so you don't need to splice the line coming from the anemometer. Works great but don't forget to flip the wire layout in the diagram above. I unfortunately had to learn that one the hard way. But the good news is that there appears to be some reverse polarity protection in the anemometer...
 
 For the Arduino sketch, see ArduinoWeather.ino above, which I adapted from the code [at cactus.io](http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer):
 
