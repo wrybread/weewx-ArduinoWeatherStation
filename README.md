@@ -4,6 +4,13 @@ This is some code to enable connecting a Davis anemometer directly to an Arduino
 
 With this method you get a pro quality internet connected wind gauge for about $130. That's assuming $10 for the Arduino and $10 for the CHIP computer that's running weeWX. Not bad!
 
+Here's a webpage that's receiving data from it every few seconds:
+
+http://rproductions.org/wind
+
+
+## Wiring
+
 Here's a wiring diagram to connect the Davis anemometer to an Arduino thanks to the good folks at [cactus.io](http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer):
 
 ![alt tag](https://github.com/wrybread/ArduinoWeatherStation/raw/master/arduino-to-davis-anemometer-hookup-circuit.jpg)
