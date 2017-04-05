@@ -21,7 +21,6 @@
 
 
 
-
 """Driver for Arduion Weather Station.
 
 Modified from MWS weather station from here:
@@ -110,24 +109,30 @@ class AWSDriver(weewx.drivers.AbstractDevice):
     def genLoopPackets(self):
 
         ntries = 0
+
         
         while ntries < self.max_tries:
             
             ntries += 1
             
             try:
+
                 packet = {'dateTime': int(time.time() + 0.5),
                           'usUnits': weewx.US}
-                
                 # open a new connection to the station for each reading
                 with Station(self.port) as station:
                     readings = station.get_readings()
+                    
                 data = Station.parse_readings(readings)
+
                 packet.update(data)
+
                 self._augment_packet(packet)
+
                 ntries = 0
 
 
+                # %%
                 time_since_last_read = time.time() - self.last_read_time
                 print "%s seconds since last read" % time_since_last_read
                 self.last_read_time = time.time()
@@ -136,10 +141,12 @@ class AWSDriver(weewx.drivers.AbstractDevice):
 
                 if self.polling_interval:
                     time.sleep(self.polling_interval)
+
                     
             except (serial.serialutil.SerialException, weewx.WeeWxIOError), e:
                 logerr("Failed attempt %d of %d to get LOOP data: %s" %
                        (ntries, self.max_tries, e))
+
                 time.sleep(self.retry_wait)
         else:
             msg = "Max retries (%d) exceeded for LOOP data" % self.max_tries
@@ -159,14 +166,38 @@ class AWSDriver(weewx.drivers.AbstractDevice):
             packet['windDir'] = None
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class Station(object):
+
+    
     def __init__(self, port):
         self.port = port
         self.baudrate = 9600
         self.timeout = 60
         self.serial_port = None
 
+        #self.serial_port = self.open()
+
+
+
+
+        
+
     def __enter__(self):
+
         self.open()
         return self
 
@@ -174,34 +205,48 @@ class Station(object):
         self.close()
 
     def open(self):
+        
         logdbg("open serial port %s" % self.port)
-        self.serial_port = serial.Serial(self.port, self.baudrate,
-                                         timeout=self.timeout)
 
-    def close(self):
-        if self.serial_port is not None:
-            logdbg("close serial port %s" % self.port)
-            self.serial_port.close()
+        try:
+            self.serial_port = serial.Serial(self.port, self.baudrate, timeout=self.timeout)
+            logdbg("successfully opened the Arduino on port %s" % self.port)
+        except Exception, e:
+            logerr("Failed to open the Arduino: %s" % e)
             self.serial_port = None
 
+        #self.serial_port = serial.Serial(self.port, self.baudrate, timeout=self.timeout)
+
+    def close(self):
+
+        if self.serial_port is not None:
+            logdbg("close Arduino on port %s" % self.port)
+
+            try: self.serial_port.close()
+            except: pass
+            
+            self.serial_port = None
+
+
+
     def read(self):
-	buff=[]
-	try:
-		buf = self.serial_port.readline()
-		i = 0
-		for i in range(5):
-			buf += self.serial_port.readline()
-			i+=1
-		buff=buf.split('\r\n')[-2].split(',')
-       		n = len(buff)
-       		if DEBUG_READ:
-           		logdbg(buff)
-	except:
-		#do nothing
-		n = 0
-	return buff
+
+        # read the buffer
+        data = ""
+
+        try:
+            while True:
+                data = self.serial_port.readline()
+                data = data.replace("\n", "")
+                break
+
+        except: pass
+        
+        return data
+
 
     def get_readings(self):
+        
         b = self.read()
         if DEBUG_READ:
             logdbg(b)
@@ -222,12 +267,24 @@ class Station(object):
           [3]temperature
           [4]barometer
         """
+
+        parts = b.split(",")
+        
+        #print "parsing: ", b, "parts =", parts
         
         data = dict()
-	data['windSpeed'] = float(b[0])  # mph
-	data['windDir'] = float(b[1])  
+        
+        try: data['windSpeed'] = float(parts[0])  # mph
+        except Exception, e:
+            logerr("Error getting windSpeed: %s" % e)
+            data['windSpeed'] = 0 # prob not a good idea to report 0 mph when the device isn't attached...
+        
+	try: data['windDir'] = float(parts[1])
+	except Exception, e:
+            logerr("Error getting windDir: %s" % e)
+            data['windDir'] = 0 # prob not a good idea to report 0 mph when the device isn't attached...
 
-	#data['windDirCompass'] = b[2]  # wind speed compass. Unused, or probably wrong variable name.
+	#data['windDirCompass'] = parts[2]  # wind speed compass. Unused, or probably wrong variable name.
 
         #%%
         print "aws: ", data
@@ -236,6 +293,14 @@ class Station(object):
         if DEBUG_READ:
             logdbg(data)
         return data
+
+
+
+
+
+
+
+
 
 
 class AWSConfEditor(weewx.drivers.AbstractConfEditor):
@@ -286,5 +351,6 @@ if __name__ == '__main__':
 
     with Station(options.port) as s:
         while True:
+
             print time.time(), s.get_readings() 
 
