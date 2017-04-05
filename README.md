@@ -6,7 +6,7 @@ With this method you get a pro quality internet connected wind gauge for about $
 
 Here's a wiring diagram to connect the Davis anemometer to an Arduino:
 
-(arduino-to davis-anemometer-hookup-circuit.jpg)
+![alt tag](arduino-to davis-anemometer-hookup-circuit.jpg)
 
 Or use the instructions here:
 
