@@ -14,17 +14,16 @@ http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemom
 
 A nice way to wire up the anemometer is to use a phone cable extension chord or coupler so you don't need to splice the line coming from the anemometer. Works great but don't forget to flip the wire layout in the diagram above. I unfortunately learned that one the hard way.
 
-For the Arduino sketch, see ArduinoWeather.ino here, which I adapted from the code [here](http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer):
+For the Arduino sketch, see ArduinoWeather.ino above, which I adapted from the code [at cactus.io](http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer):
 
-To read the data from the Arduino on a Raspberry Pi or CHIP or whatever, see arduino_test.py
+Then simply connect the Arduino to the USB port of your Pi or whatever. Note the script arduino_test.py, which should start printing the data being sent by your Arduino. If not, you might have to set your port at the top of the file.
 
-To use this with the weeWX weather station program, see the driver aws.py.
+To use this with the weeWX weather station program, see the driver aws.py. I need to package it with the weeWX extension manager to make installation a bit easier.
 
-For my purposes wind is the biggie, but it would be easy enough to add a thermometer and barometer and other sensors to the Arduino.
 
 ## To do:
 
-- add other sensors
+- add other sensors. For my purposes wind is the biggie, but it's obviously easy enough to connect other sensors to the Arduino like temperature and barometric pressure. Note that the Arduino sketch has placeholders for temperature and barometer.
 
 - make an installer for the weeWX driver package
 
@@ -32,7 +31,7 @@ For my purposes wind is the biggie, but it would be easy enough to add a thermom
 
 - load ArduinoWeather.ino onto your Arduino
 
-- install the weeWX driver file. I'm putting it in /home/weewx/bin/weewx/drivers/aws.py, but I don't think that's the correct location
+- install the AWS weeWX driver included here. I'm putting it in /home/weewx/bin/weewx/drivers/aws.py, but I don't think that's the correct location
 
 - add this section to your weeWX config file:
 
