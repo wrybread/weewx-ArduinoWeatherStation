@@ -16,6 +16,10 @@ To use this with the weeWX weather station program, see the driver aws.py.
 
 For my purposes wind is the biggie, but it would be easy enough to add a thermometer and barometer and other sensors to the Arduino.
 
+## To do:
+
+- fix crash issue. My CHIP runs out of memory after 10 minutes or so of the aws weewx driver running. Not sure if I introduced the error or if it was there in the MWS driver that I modded.
+
 ## Installation
 
 - load ArduinoWeather.ino onto your Arduino
