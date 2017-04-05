@@ -1,33 +1,23 @@
 #!/usr/bin/env python
 #
-# Arduino Weather Station, adapted by wrybread@gmail.com.
+# This is a weeWX driver to enable weeWX to read data from an Arduino.
 #
-# Connect a Davis anemometer to an Arduino as described here:
-# http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer
+# See here for more details:
 #
-# Installation instructions:
+# https://github.com/wrybread/ArduinoWeatherStation
 #
-# On a CHIP, was simply "apt-get install arduino", Not sure if was necessary.
+# by wrybread@gmail.com
 #
-# Original copyright notices:
 #
-# Copyright 2014 Matthew Wall
-# See the file LICENSE.txt for your rights.
-# Modified by Yann Chemin for IWMI MWS station
-# March 2015 Public Domain if previous copyright allows.
-# Building Manual for the Mobile Weather Station is here:
-# http://www.iwmi.cgiar.org/resources/mobile-weather-stations/
-
+#
 
 
 
 """Driver for Arduion Weather Station.
 
-Modified from MWS weather station from here:
+See here for more info:
 
-https://github.com/YannChemin/MWS
-
-That was modified from weewx/trunk/drivers/ws1.py 
+https://github.com/wrybread/ArduinoWeatherStation
 
 """
 
@@ -107,7 +97,7 @@ class AWSDriver(weewx.drivers.AbstractDevice):
         self.read_counter = 0
 
 
-        logdbg("open serial port %s" % self.port)
+        logdbg("Opening the Arduino on port %s" % self.port)
 
         self.baudrate = 9600
         self.timeout = 10 # changed from 60
@@ -131,20 +121,14 @@ class AWSDriver(weewx.drivers.AbstractDevice):
                 return new_data
 
         except Exception, e:
-            print "error reading serial port: " + str(e) #%%
-            
             pass
 
 
 
     def parse_readings(self, b):
         """
-	  AWS station emits csv data in the format:
-
-          #Serial.print("lon,lat,altitude,sats,date,GMTtime,winddir");
-          #Serial.print(",windspeedms,windgustms,windspdms_avg2m,winddir_avg2m,windgustms_10m,windgustdir_10m");
-          #Serial.print(",humidity,tempc,rainhourmm,raindailymm,rainindicate,rain5minmm,pressure,batt_lvl,light_lvl");
-
+	  The Arduino script emits data in the format:
+	  
           [0]wind speed
           [1]wind direction
           [2]wind direction compass
@@ -166,18 +150,18 @@ class AWSDriver(weewx.drivers.AbstractDevice):
             #data['temperature'] = float(parts[2])
             #data['barometer'] = float(parts[3])
             
+            #data['windDirCompass'] = parts[2]  # wind speed compass. Unused, or probably wrong variable name.
+
         except Exception, e:
-            logerr("Error converting data: %s" % e)
+            logerr("Error parsing data: %s" % e)
         
-
-	#data['windDirCompass'] = parts[2]  # wind speed compass. Unused, or probably wrong variable name.
-
         #%%
         print "aws: ", data
 
-
         if DEBUG_READ:
             logdbg(data)
+
+            
         return data
 
 
@@ -202,11 +186,11 @@ class AWSDriver(weewx.drivers.AbstractDevice):
                 packet = {'dateTime': int(time.time() + 0.5),
                           'usUnits': weewx.US}
                 
-                serial_data = self.read_buffer()
+                serial_data = self.read_buffer() # read the buffer from the Arduino
                     
-                data = self.parse_readings(serial_data)
+                data = self.parse_readings(serial_data) # parse the data
                 
-                packet.update(data)
+                packet.update(data) 
                 
                 self._augment_packet(packet)
                 
@@ -214,6 +198,7 @@ class AWSDriver(weewx.drivers.AbstractDevice):
 
 
                 #%%
+                # print the time between reads and the count for debugging for now
                 self.read_counter += 1
                 time_since_last_read = time.time() - self.last_read_time
                 print "%s seconds since last read" % time_since_last_read, self.read_counter
@@ -228,6 +213,7 @@ class AWSDriver(weewx.drivers.AbstractDevice):
                 logerr("Failed attempt %d of %d to get LOOP data: %s" %
                        (ntries, self.max_tries, e))
                 time.sleep(self.retry_wait)
+                
         else:
             msg = "Max retries (%d) exceeded for LOOP data" % self.max_tries
             logerr(msg)
@@ -236,12 +222,6 @@ class AWSDriver(weewx.drivers.AbstractDevice):
 
 
     def _augment_packet(self, packet):
-        # calculate the rain delta from rain total
-        #if self.last_rain is not None:
-        #    packet['rain'] = packet['long_term_rain'] - self.last_rain
-        #else:
-        #    packet['rain'] = None
-        #self.last_rain = packet['long_term_rain']
 
         # no wind direction when wind speed is zero
         if 'windSpeed' in packet and not packet['windSpeed']:
@@ -303,7 +283,7 @@ if __name__ == '__main__':
         print "AWS driver version %s" % DRIVER_VERSION
         exit(0)
 
-    with Station(options.port) as s:
+    with Station(options.port) as s: # what's this? 
         while True:
             print time.time(), s.get_readings() 
 
