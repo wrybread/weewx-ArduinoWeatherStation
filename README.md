@@ -1,6 +1,6 @@
 # Arduino Weather Station
 
-This is some code to enable connecting a Davis anemometer directly to an Arduino, without the Davis base station (aka the "ISS"). The anemometer I used is sold as a replacement for the anemomter on the Davis Vantage Pro2. They're on eBay in the $110 range. The one I purchased had the auction name "Davis Instruments 6410 Davis Anemometer For Vantage Pro Pro2 6152". Works great!
+This is some code to enable connecting a Davis anemometer directly to an Arduino, without the Davis base station (aka the "ISS"). The anemometer I used is sold as a replacement part for the Davis Vantage Pro2. They're on eBay in the $110 range. The one I purchased had the auction name "Davis Instruments 6410 Davis Anemometer For Vantage Pro Pro2 6152". Works great!
 
 With this method you get a pro quality internet connected wind gauge for about $130. That's assuming $10 for the Arduino and $10 for the CHIP computer that's running weeWX. Not bad!
 
