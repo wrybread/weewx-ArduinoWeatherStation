@@ -24,7 +24,7 @@ For my purposes wind is the biggie, but it would be easy enough to add a thermom
 
 - add other sensors
 
-## Installation
+## Installation 
 
 - load ArduinoWeather.ino onto your Arduino
 
