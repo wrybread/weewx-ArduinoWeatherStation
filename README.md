@@ -8,11 +8,13 @@ Here's a wiring diagram to connect the Davis anemometer to an Arduino thanks to 
 
 ![alt tag](https://github.com/wrybread/ArduinoWeatherStation/raw/master/arduino-to-davis-anemometer-hookup-circuit.jpg)
 
-Or use the instructions here:
+Or use their instructions directly:
 
 http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer
 
-For the Arduino sketch, see ArduinoWeather.ino, which I adapted from the code at the above link.
+A nice way to wire up the anemometer is to use a phone cable extension chord or coupler so you don't need to splice the line coming from the anemometer. Works nicely.
+
+For the Arduino sketch, see ArduinoWeather.ino here, which I adapted from the code [here](http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer):
 
 To read the data from the Arduino on a Raspberry Pi or CHIP or whatever, see arduino_test.py
 
@@ -23,6 +25,8 @@ For my purposes wind is the biggie, but it would be easy enough to add a thermom
 ## To do:
 
 - add other sensors
+
+- make an installer for the weeWX driver package
 
 ## Installation 
 
