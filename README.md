@@ -14,14 +14,7 @@ To read the data from the Arduino on a Raspberry Pi or CHIP or whatever, see ard
 
 To use this with the weeWX weather station program, see the driver aws.py.
 
-Note that it would be easy enough to add this thermometer to the Arduino:
-
-https://www.sparkfun.com/products/11050
-
-And a barometer:
-
-https://www.sparkfun.com/search/results?term=barometer
-
+For my purposes wind is the biggie, but it would be easy enough to add a thermometer and barometer and other sensors to the Arduino.
 
 ## Installation
 
