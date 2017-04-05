@@ -183,4 +183,3 @@ void getWindDirection() {
 float getKnots(float speed) { 
   return speed * 0.868976; 
 } 
-
