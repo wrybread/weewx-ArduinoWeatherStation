@@ -32,7 +32,7 @@ To use this with the weeWX weather station program, see the driver aws.py. I nee
 
 - load ArduinoWeather.ino onto your Arduino
 
-- install the AWS weeWX driver included here. I'm putting it in /home/weewx/bin/weewx/drivers/aws.py, but I don't think that's the correct location
+- install the AWS weeWX driver included here (aws.py) in your user directory. In my installation that's /home/weewx/bin/user/aws.py.
 
 - add this section to your weeWX config file:
 
@@ -44,7 +44,7 @@ To use this with the weeWX weather station program, see the driver aws.py. I nee
     port = /dev/ttyACM0
 
     # The driver to use:
-    driver = weewx.drivers.aws
+    driver = user.aws
 
 - in the [Station] section of your weeWX config file, set "station_type" to "AWS".
 
