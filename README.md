@@ -32,7 +32,7 @@ To use this with the weeWX weather station program, see the driver aws.py. I nee
 
 - load ArduinoWeather.ino onto your Arduino
 
-- install the AWS weeWX driver included here (aws.py) in your user directory. In my installation that's /home/weewx/bin/user/aws.py.
+- install the AWS weeWX driver included here (aws.py) in your user directory. It *should* be possible to use the WEE_EXTENSION tool to install it, but I haven't confirmed that yet. Anyway, copying the driver (aws.py) to weewx/bin/user/aws.py should do it.
 
 - add this section to your weeWX config file:
 
@@ -49,9 +49,4 @@ To use this with the weeWX weather station program, see the driver aws.py. I nee
 - in the [Station] section of your weeWX config file, set "station_type" to "AWS".
 
 
-## To do:
-
-- add other sensors. For my purposes wind is the biggie, but it's obviously easy enough to connect other sensors to the Arduino like temperature and barometric pressure. Note that the Arduino sketch has placeholders for temperature and barometer.
-
-- make an installer for the weeWX driver package
 
