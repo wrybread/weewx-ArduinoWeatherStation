@@ -55,10 +55,13 @@ To use this with the weeWX weather station program, see the driver aws.py. I nee
 - test installation using the wee_extension utility. These instructions should work:
 
 1) Download the driver:
+
 wget -O weewx-aws.zip https://github.com/wrybread/weewx-ArduinoWeatherStation.git
 
 2) Install the driver:
+
 sudo wee_extension --install weewx-aws.zip
 
 3) Configure the driver:
+
 sudo wee_config --reconfigure
