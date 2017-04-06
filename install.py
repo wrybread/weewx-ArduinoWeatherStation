@@ -1,19 +1,19 @@
-# installer for meteostick driver
-# Copyright 2016 Matthew Wall
+# installer for Arduino Weather Station driver
+# Copyright 2017 Alec Bennett
 # Distributed under the terms of the GNU Public License (GPLv3)
 
 from setup import ExtensionInstaller
 
 def loader():
-    return MeteostickInstaller()
+    return AWSInstaller()
 
 class MeteostickInstaller(ExtensionInstaller):
     def __init__(self):
-        super(MeteostickInstaller, self).__init__(
-            version="0.49",
-            name='meteostick',
-            description='Collect data from meteostick via serial port',
-            author="Matthew Wall",
-            author_email="mwall@users.sourceforge.net",
-            files=[('bin/user', ['bin/user/meteostick.py'])]
+        super(AWSInstaller, self).__init__(
+            version="0.1",
+            name='aws',
+            description='Collect data from an Arduino connected to a Davis anemometer',
+            author="Alec Bennett",
+            author_email="wrybread@gmail.com",
+            files=[('bin/user', ['bin/user/aws.py'])]
             )
