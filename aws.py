@@ -278,17 +278,15 @@ class AWSConfEditor(weewx.drivers.AbstractConfEditor):
 
 
 
-### NOTE: THIS SECTION IS BROKEN IN AWS.PY, WHICH MEANS IT CAN'T BE RUN IN STANDALONE FORM.
-
 
     
 # define a main entry point for basic testing of the station without weewx
 # engine and service overhead.  invoke this as follows from the weewx root dir:
 #
-# Ubuntu standard set up with user driver:
+# To run on a standard apt-get install (unconfirmed, might ened to adjust paths):
 # PYTHONPATH=bin python /home/weewx/bin/user/aws.py
 
-# For setup.py installation:
+# For setup.py instals:
 # PYTHONPATH=/home/weewx/bin python /home/weewx/bin/user/aws.py
 #
 
@@ -314,9 +312,8 @@ if __name__ == '__main__':
 
 
 
-    station = AWSDriver(loop_interval=2.0)
+    station = AWSDriver()
     for packet in station.genLoopPackets():
         print time.time(),  packet
 
     
-
