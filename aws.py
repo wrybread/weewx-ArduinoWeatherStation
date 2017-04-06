@@ -66,6 +66,9 @@ def logerr(msg):
 
 
 
+
+
+
 class AWSDriver(weewx.drivers.AbstractDevice):
     """weewx driver that communicates with an Arduino weather station
     
@@ -106,6 +109,8 @@ class AWSDriver(weewx.drivers.AbstractDevice):
         self.serial_port = serial.Serial(self.port, self.baudrate,
                                          timeout=self.timeout)
 
+
+        print "done initting" #%%
 
 
 
@@ -197,12 +202,13 @@ class AWSDriver(weewx.drivers.AbstractDevice):
                 ntries = 0
 
 
-                #%%
+                '''
                 # print the time between reads and the count for debugging for now
                 self.read_counter += 1
                 time_since_last_read = time.time() - self.last_read_time
                 print "%s seconds since last read" % time_since_last_read, self.read_counter
                 self.last_read_time = time.time()
+                '''
                 
                 yield packet
 
@@ -238,6 +244,7 @@ class AWSDriver(weewx.drivers.AbstractDevice):
 
 
 class AWSConfEditor(weewx.drivers.AbstractConfEditor):
+    
     @property
     def default_stanza(self):
         return """
@@ -258,18 +265,35 @@ class AWSConfEditor(weewx.drivers.AbstractConfEditor):
         return {'port': port}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+### NOTE: THIS SECTION IS BROKEN IN AWS.PY, WHICH MEANS IT CAN'T BE RUN IN STANDALONE FORM.
+
+
+    
 # define a main entry point for basic testing of the station without weewx
 # engine and service overhead.  invoke this as follows from the weewx root dir:
 #
 # Ubuntu standard set up with user driver:
-# PYTHONPATH=bin python /usr/share/weewx/user/aws.py
+# PYTHONPATH=bin python /home/weewx/bin/user/aws.py
 
-
-### NOTE: THIS SECTION IS PROBABLY BROKEN IN AWS.PY. NOT SURE IF IT'S NECESSARY TO FIX?
-
-
+# For setup.py installation:
+# PYTHONPATH=/home/weewx/bin python /home/weewx/bin/user/aws.py
+#
 
 if __name__ == '__main__':
+    
     import optparse
 
     usage = """%prog [options] [--help]"""
@@ -288,7 +312,11 @@ if __name__ == '__main__':
         print "AWS driver version %s" % DRIVER_VERSION
         exit(0)
 
-    with Station(options.port) as s: # what's this? 
-        while True:
-            print time.time(), s.get_readings() 
+
+
+    station = AWSDriver(loop_interval=2.0)
+    for packet in station.genLoopPackets():
+        print time.time(),  packet
+
+    
 
