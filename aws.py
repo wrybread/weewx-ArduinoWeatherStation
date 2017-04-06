@@ -248,7 +248,7 @@ class AWSConfEditor(weewx.drivers.AbstractConfEditor):
     port = /dev/ttyACM0
 
     # The driver to use:
-    driver = weewx.drivers.aws
+    driver = user.aws
 """
 
     def prompt_for_settings(self):
@@ -263,6 +263,11 @@ class AWSConfEditor(weewx.drivers.AbstractConfEditor):
 #
 # Ubuntu standard set up with user driver:
 # PYTHONPATH=bin python /usr/share/weewx/user/aws.py
+
+
+### NOTE: THIS SECTION IS PROBABLY BROKEN IN AWS.PY. NOT SURE IF IT'S NECESSARY TO FIX?
+
+
 
 if __name__ == '__main__':
     import optparse
