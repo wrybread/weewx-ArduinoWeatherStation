@@ -7,7 +7,7 @@ from setup import ExtensionInstaller
 def loader():
     return AWSInstaller()
 
-class MeteostickInstaller(ExtensionInstaller):
+class AWSInstaller(ExtensionInstaller):
     def __init__(self):
         super(AWSInstaller, self).__init__(
             version="0.1",
