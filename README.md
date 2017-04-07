@@ -52,6 +52,8 @@ To use this with the weeWX weather station program, see the driver aws.py. I nee
 
 ## To do:
 
+- set up the Arduino Weather Station next to a Davis Vantage Pro2 and compare the readings
+
 - test installation using the wee_extension utility. These instructions should work:
 
 1) Download the driver:
