@@ -86,6 +86,7 @@ class AWSDriver(weewx.drivers.AbstractDevice):
     """
     def __init__(self, **stn_dict):
         self.port = stn_dict.get('port', DEFAULT_PORT)
+
         self.polling_interval = float(stn_dict.get('polling_interval', 1))
         self.max_tries = int(stn_dict.get('max_tries', 5))
         self.retry_wait = int(stn_dict.get('retry_wait', 10))
@@ -105,12 +106,19 @@ class AWSDriver(weewx.drivers.AbstractDevice):
         self.baudrate = 9600
         self.timeout = 10 # changed from 60
         self.serial_port = None
-        
-        self.serial_port = serial.Serial(self.port, self.baudrate,
-                                         timeout=self.timeout)
 
+        try:        
+            self.serial_port = serial.Serial(self.port, self.baudrate,
+                                             timeout=self.timeout)
 
+            self.serial_port.flush()
 
+            logdbg("Successfully opened the Arduino.")            
+
+        except Exception, e:
+            
+            logerr("Error opening the Arduino! %s" % e)
+            
 
     def read_buffer(self):
 
@@ -139,13 +147,16 @@ class AWSDriver(weewx.drivers.AbstractDevice):
           [4]barometer
         """
         
-        parts = b.split(",")
-        
-        #print "parsing: ", b, "parts =", parts
-        
-        data = dict()
+        data = {}
         
         try:
+
+            parts = b.split(",")
+            
+            #print "parsing: ", b, "parts =", parts
+            
+            data = dict()
+
             data['windSpeed'] = float(parts[0])  # mph
             data['windDir'] = float(parts[1])
 
@@ -315,3 +326,4 @@ if __name__ == '__main__':
         print time.time(),  packet
 
     
+
