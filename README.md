@@ -6,7 +6,7 @@ The anemometer I used is sold as a replacement part for the Davis Vantage Pro2. 
 
 Here's a test page I put up that's receiving data from it every few seconds:
 
-http://rproductions.org/wind
+http://sinkingsensation.com/wind/
 
 
 ## Wiring and Setup
